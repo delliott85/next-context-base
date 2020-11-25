@@ -7,6 +7,8 @@ import firebase, { updateFirestore, addToFirestore } from '../../api';
 import { useStateValue } from '../../state';
 import { userLogin } from '../../reducer/currentUser';
 
+import { setLocalStorage } from '../../utils';
+
 import AuthForm from './AuthForm';
 
 export default function AuthContainer({ type }) {
@@ -28,7 +30,8 @@ export default function AuthContainer({ type }) {
             email: email,
             username: username,
             registered_date: Date.now(),
-            last_login: Date.now()
+            last_login: Date.now(),
+            email_verified: false
         }
 
         return (
@@ -38,7 +41,7 @@ export default function AuthContainer({ type }) {
                     isLoggedIn: true
                 };
                 dispatch(userLogin(currentUser));
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                setLocalStorage('currentUser', currentUser);
                 return;
             }).catch((err) => {
                 console.log('Error creating profile', err)
@@ -74,7 +77,7 @@ export default function AuthContainer({ type }) {
             }
 
             dispatch(userLogin(localUser));
-            localStorage.setItem('currentUser', JSON.stringify(localUser));
+            setLocalStorage('currentUser', localUser);
             updateFirestore('users', id, currentUser);
             updateFirestore('profiles', userData.data().username, { last_login: Date.now() });
         }).catch((err) => {
