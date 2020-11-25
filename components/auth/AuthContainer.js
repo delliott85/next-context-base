@@ -7,7 +7,7 @@ import firebase, { updateFirestore, addToFirestore } from '../../api';
 import { useStateValue } from '../../state';
 import { userLogin } from '../../reducer/currentUser';
 
-import { setLocalStorage } from '../../utils';
+import { setLocalStorage, genRandomString } from '../../utils';
 
 import AuthForm from './AuthForm';
 
@@ -104,7 +104,7 @@ export default function AuthContainer({ type }) {
                 addProfileToDatabase(uid, username);
 
                 const actionSettings = {
-                    url: 'https://localhost:5000/?email=' + firebase.auth().currentUser.email
+                    url: `https://localhost:5000/?emailVerified=${genRandomString()}`
                 }
                 data.user.sendEmailVerification(actionSettings).then(() => {
                     console.log('Verification email sent');

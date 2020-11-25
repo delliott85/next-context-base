@@ -1,9 +1,10 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
+import firebase from '../api';
 
 import { useStateValue } from '../state';
-import { userLogout } from '../reducer/currentUser';
+import { userLogin, userLogout } from '../reducer/currentUser';
 
 import { setLocalStorage } from '../utils';
 
@@ -13,6 +14,26 @@ export default function Layout({ children, appRendered }) {
     }
 
     const [{ currentUser }, dispatch] = useStateValue();
+
+    // If we've been redirected via email verification
+    // Check firebase user and set value accordingly
+    firebase.auth().onAuthStateChanged((user) => {
+        const searchParams = new URLSearchParams(window.location.search);
+
+        if (searchParams.has('emailVerified')) {
+            dispatch(userLogin({
+                ...currentUser,
+                email_verified: user.emailVerified
+            }))
+            setLocalStorage(
+                'currentUser',
+                {
+                    ...currentUser,
+                    email_verified: user.emailVerified
+                }
+            );
+        }
+    });
 
     const handleUserLogout = () => {
         dispatch(userLogout());
