@@ -10,7 +10,7 @@ import EditProfileForm from '../components/profile/EditProfileForm';
 
 export default function Profile() {
     const [pageRendered, setPageRender] = useState(false);
-    const [{ currentUser }, dispatch] = useStateValue();
+    const [{ currentUser, profile }, dispatch] = useStateValue();
 
     useEffect(() => {
         const profileRef = firebase.firestore().collection('profiles').doc(currentUser.username);
@@ -31,6 +31,10 @@ export default function Profile() {
         });
     }
 
+    const handleRemoveLinkClick = () => {
+        console.log('Remove link');
+    }
+
     const handleFormSubmit = (e) => {
         e.preventDefault();
 
@@ -39,11 +43,18 @@ export default function Profile() {
         const location = form.location.value;
         const bio = form.bio.value;
         const file = form.avatar.files[0];
+        const link = form.link.value;
+
+        let links = profile.links;
+        if (link && !links.includes(link)) {
+            links.push(link);
+        }
 
         let newData = {
             location,
             bio,
-            name
+            name,
+            links
         }
 
         if (file) {
@@ -81,6 +92,7 @@ export default function Profile() {
             <h1>My Profile</h1>
             <EditProfileForm
                 onFormSubmit={handleFormSubmit}
+                onRemoveLinkClick={handleRemoveLinkClick}
             />
         </Fragment>
     );
