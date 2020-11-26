@@ -56,6 +56,7 @@ export default function AuthContainer({ type }) {
         
         const data = {
             user_id: uid,
+            username: username,
             registered_date: Date.now(),
             last_login: Date.now()
         };
