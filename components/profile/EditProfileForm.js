@@ -30,6 +30,7 @@ export default function EditProfileForm({ onFormSubmit }) {
                 <label htmlFor="bio">Bio</label>
                 <textarea name="bio" defaultValue={profile.bio} />
             </div>
+
             <div>
                 <button type="submit">Save</button>
             </div>

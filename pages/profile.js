@@ -55,7 +55,7 @@ export default function Profile() {
 
             uploadTask.then(snapshot => snapshot.ref.getDownloadURL()).catch((err) => {
                 console.warn('There was an error uploading the image', err);
-                submitActions(data);
+                submitActions(newData);
                 return;
             })
             .then((url) => {
