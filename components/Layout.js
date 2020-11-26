@@ -13,7 +13,7 @@ export default function Layout({ children, appRendered }) {
         return null;
     }
 
-    const [{ currentUser }, dispatch] = useStateValue();
+    const [{ currentUser, profile }, dispatch] = useStateValue();
 
     // If we've been redirected via email verification
     // Check firebase user and set value accordingly
@@ -43,6 +43,7 @@ export default function Layout({ children, appRendered }) {
     return (
         <Fragment>
             <p>{JSON.stringify(currentUser)}</p>
+            <p>{JSON.stringify(profile)}</p>
             <ul>
                 <li>
                     <Link href="/login"><a>Login</a></Link>
@@ -59,6 +60,9 @@ export default function Layout({ children, appRendered }) {
                 </li>
                 <li>
                     <Link href="/account"><a>My Account</a></Link>
+                </li>
+                <li>
+                    <Link href="/profile"><a>Profile</a></Link>
                 </li>
             </ul>
             {children}
