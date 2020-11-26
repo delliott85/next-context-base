@@ -10,6 +10,19 @@ export default function EditProfileForm({ onFormSubmit }) {
             onSubmit={onFormSubmit}
         >
             <div>
+                {profile.avatar &&
+                    <div>
+                        <img src={profile.avatar} alt="" />
+                    </div>
+                }
+                <label htmlFor="avatar">Profile Picture</label>
+                <input
+                    type="file"
+                    name="avatar"
+                    accept="image/*"
+                />
+            </div>
+            <div>
                 <label htmlFor="location">Location</label>
                 <input type="text" name="location" defaultValue={profile.location} />
             </div>

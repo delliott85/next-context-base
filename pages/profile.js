@@ -24,22 +24,50 @@ export default function Profile() {
         });
     }, []);
 
+    const submitActions = (newData) => {
+        updateFirestore('profiles', currentUser.username, newData).then(() => {
+            setLocalStorage('profile', newData);
+            dispatch(updateProfile(newData));
+        });
+    }
+
     const handleFormSubmit = (e) => {
         e.preventDefault();
 
         const form = e.currentTarget;
         const location = form.location.value;
         const bio = form.bio.value;
+        const file = form.avatar.files[0];
 
-        const newData = {
+        let newData = {
             location,
             bio
         }
 
-        updateFirestore('profiles', currentUser.username, newData).then(() => {
-            setLocalStorage('profile', newData);
-            dispatch(updateProfile(newData));
-        });
+        if (file) {
+            const newFileName = Date.now();
+            const meta = { contentType: file.type };
+
+            const storageRef = firebase.storage().ref();
+
+            const childUrl = `${currentUser.user_id}/${newFileName.toString()}`;
+            const uploadTask = storageRef.child(childUrl).put(file, meta);
+
+            uploadTask.then(snapshot => snapshot.ref.getDownloadURL()).catch((err) => {
+                console.warn('There was an error uploading the image', err);
+                submitActions(data);
+                return;
+            })
+            .then((url) => {
+                newData = {
+                    ...newData,
+                    avatar: url
+                }
+                return submitActions(newData);
+            });
+        }
+
+        return submitActions(newData);
     }
 
     if (!pageRendered) {
