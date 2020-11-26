@@ -45,10 +45,10 @@ export default function Layout({ children, appRendered }) {
             <p>{JSON.stringify(currentUser)}</p>
             <ul>
                 <li>
-                    <Link href="login"><a>Login</a></Link>
+                    <Link href="/login"><a>Login</a></Link>
                 </li>
                 <li>
-                    <Link href="register"><a>Register</a></Link>
+                    <Link href="/register"><a>Register</a></Link>
                 </li>
                 <li>
                     <button
@@ -56,6 +56,9 @@ export default function Layout({ children, appRendered }) {
                     >
                         Logout
                     </button>
+                </li>
+                <li>
+                    <Link href="/account"><a>My Account</a></Link>
                 </li>
             </ul>
             {children}
