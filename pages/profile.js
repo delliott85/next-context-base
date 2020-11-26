@@ -35,13 +35,15 @@ export default function Profile() {
         e.preventDefault();
 
         const form = e.currentTarget;
+        const name = form.name.value;
         const location = form.location.value;
         const bio = form.bio.value;
         const file = form.avatar.files[0];
 
         let newData = {
             location,
-            bio
+            bio,
+            name
         }
 
         if (file) {

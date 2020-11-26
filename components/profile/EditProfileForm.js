@@ -23,6 +23,10 @@ export default function EditProfileForm({ onFormSubmit }) {
                 />
             </div>
             <div>
+                <label htmlFor="name">Display Name</label>
+                <input type="text" name="name" defaultValue={profile.name} />
+            </div>
+            <div>
                 <label htmlFor="location">Location</label>
                 <input type="text" name="location" defaultValue={profile.location} />
             </div>
