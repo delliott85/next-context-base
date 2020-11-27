@@ -5,8 +5,6 @@ import { useRouter } from 'next/router';
 import { useStateValue } from '../state';
 import { updateProfile } from '../reducer/profile';
 
-import { setLocalStorage } from '../utils';
-
 import EditProfileForm from '../components/profile/EditProfileForm';
 
 export default function Profile() {
@@ -21,15 +19,18 @@ export default function Profile() {
             return;
         }
 
-        const profileRef = firebase.firestore().collection('profiles').doc(currentUser.username);
-        profileRef.get().then((profileData) => {
-            console.log(profileData.data());
-            setLocalStorage('profile', profileData.data());
-            dispatch(updateProfile(profileData.data()));
-            setPageRender(true);
-        }).catch((err) => {
-            console.log('There was an error fetching the profile', err);
-        });
+        if (Object.keys(profile).length === 0) {
+            const profileRef = firebase.firestore().collection('profiles').doc(currentUser.username);
+            profileRef.get().then((profileData) => {
+                dispatch(updateProfile(profileData.data()));
+                setPageRender(true);
+            }).catch((err) => {
+                console.log('There was an error fetching the profile', err);
+            });
+            return;
+        }
+
+        setPageRender(true);
         return;
     }, []);
 
@@ -39,7 +40,6 @@ export default function Profile() {
 
     const submitActions = (newData) => {
         updateFirestore('profiles', currentUser.username, newData).then(() => {
-            setLocalStorage('profile', newData);
             dispatch(updateProfile(newData));
         });
     }
