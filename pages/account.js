@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import firebase, { updateFirestore, removeFromFirestore } from '../api';
 
@@ -13,11 +13,25 @@ import AccountSettings from '../components/account/AccountSettings';
 import ReauthModal from '../components/modal/ReauthModal';
 
 export default function Account() {
+    const [pageRendered, setPageRender] = useState(false);
     const [queuedFunction, setqueuedFunction] = useState(null);
     const [validationError, setValidationError] = useState(null);
 
     const [{ currentUser }, dispatch] = useStateValue();
     const router = useRouter();
+
+    useEffect(() => {
+        if (!currentUser.isLoggedIn) {
+            router.push('/login');
+            return;
+        }
+        setPageRender(true);
+        return;
+    }, []);
+
+    if (!pageRendered) {
+        return <h1>Loading....</h1>
+    };
 
     const formSubmitActions = (type, form) => {
         setqueuedFunction({

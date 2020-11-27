@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useState } from 'react';
 import firebase, { updateFirestore } from '../api';
+import { useRouter } from 'next/router';
 
 import { useStateValue } from '../state';
 import { updateProfile } from '../reducer/profile';
@@ -12,7 +13,14 @@ export default function Profile() {
     const [pageRendered, setPageRender] = useState(false);
     const [{ currentUser, profile }, dispatch] = useStateValue();
 
+    const router = useRouter();
+
     useEffect(() => {
+        if (!currentUser.isLoggedIn) {
+            router.push('/login');
+            return;
+        }
+
         const profileRef = firebase.firestore().collection('profiles').doc(currentUser.username);
         profileRef.get().then((profileData) => {
             console.log(profileData.data());
@@ -22,7 +30,12 @@ export default function Profile() {
         }).catch((err) => {
             console.log('There was an error fetching the profile', err);
         });
+        return;
     }, []);
+
+    if (!pageRendered) {
+        return <h1>Loading....</h1>
+    };
 
     const submitActions = (newData) => {
         updateFirestore('profiles', currentUser.username, newData).then(() => {
@@ -82,10 +95,6 @@ export default function Profile() {
 
         return submitActions(newData);
     }
-
-    if (!pageRendered) {
-        return <h1>Loading....</h1>
-    };
 
     return (
         <Fragment>
