@@ -1,10 +1,12 @@
 import { Fragment, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import firebase from '../api';
 
 import { useStateValue } from '../state';
 import { userLogin, userLogout } from '../reducer/currentUser';
+import { clearProfile } from '../reducer/profile';
 
 import { setLocalStorage } from '../utils';
 
@@ -14,6 +16,7 @@ export default function Layout({ children, appRendered }) {
     }
 
     const [{ currentUser, profile }, dispatch] = useStateValue();
+    const router = useRouter();
 
     // If we've been redirected via email verification
     // Check firebase user and set value accordingly
@@ -36,8 +39,17 @@ export default function Layout({ children, appRendered }) {
     });
 
     const handleUserLogout = () => {
-        dispatch(userLogout());
-        setLocalStorage('currentUser', { isLoggedIn: false })
+        const promise = new Promise((resolve, reject) => {
+            resolve(dispatch(userLogout()));
+        });
+
+        promise.then(() => {
+            router.push('/');
+            setLocalStorage('currentUser', { isLoggedIn: false });
+            dispatch(clearProfile());
+        }).catch((err) => {
+            console.log(err);
+        });
     }
 
     return (
