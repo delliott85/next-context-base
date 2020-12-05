@@ -80,7 +80,6 @@ export default function Profile() {
                 resolve(
                     fileUpload(avatar).then(snapshot => snapshot.ref.getDownloadURL()).catch((err) => {
                         console.warn('There was an error uploading the image', err);
-                        submitActions(newData);
                         return;
                     })
                     .then((url) => {
@@ -98,7 +97,6 @@ export default function Profile() {
                 resolve(
                     fileUpload(banner).then(snapshot => snapshot.ref.getDownloadURL()).catch((err) => {
                         console.warn('There was an error uploading the image', err);
-                        submitActions(newData);
                         return;
                     })
                     .then((url) => {
@@ -115,6 +113,8 @@ export default function Profile() {
 
         promises.then(() => {
             return submitActions(newData);
+        }).then(() => {
+            router.push('/');
         }).catch((err) => {
             console.warn('There was an error'. err);
         });
