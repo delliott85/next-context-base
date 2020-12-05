@@ -44,8 +44,16 @@ export default function Profile() {
         });
     }
 
-    const handleRemoveLinkClick = () => {
-        console.log('Remove link');
+    const fileUpload = (file) => {
+        const newFileName = Date.now();
+        const meta = { contentType: file.type };
+
+        const storageRef = firebase.storage().ref();
+
+        const childUrl = `${currentUser.user_id}/${newFileName.toString()}`;
+        const uploadTask = storageRef.child(childUrl).put(file, meta);
+
+        return uploadTask;
     }
 
     const handleFormSubmit = (e) => {
@@ -55,45 +63,61 @@ export default function Profile() {
         const name = form.name.value;
         const location = form.location.value;
         const bio = form.bio.value;
-        const file = form.avatar.files[0];
-        const link = form.link.value;
-
-        let links = profile.links;
-        if (link && !links.includes(link)) {
-            links.push(link);
-        }
+        const avatar = form.avatar.files[0];
+        const banner = form.banner.files[0];
 
         let newData = {
             location,
             bio,
-            name,
-            links
+            name
         }
 
-        if (file) {
-            const newFileName = Date.now();
-            const meta = { contentType: file.type };
+        let avatarPromise;
+        let bannerPromise;
 
-            const storageRef = firebase.storage().ref();
-
-            const childUrl = `${currentUser.user_id}/${newFileName.toString()}`;
-            const uploadTask = storageRef.child(childUrl).put(file, meta);
-
-            uploadTask.then(snapshot => snapshot.ref.getDownloadURL()).catch((err) => {
-                console.warn('There was an error uploading the image', err);
-                submitActions(newData);
-                return;
-            })
-            .then((url) => {
-                newData = {
-                    ...newData,
-                    avatar: url
-                }
-                return submitActions(newData);
+        if (avatar) {
+            avatarPromise = new Promise((resolve, reject) => {
+                resolve(
+                    fileUpload(avatar).then(snapshot => snapshot.ref.getDownloadURL()).catch((err) => {
+                        console.warn('There was an error uploading the image', err);
+                        submitActions(newData);
+                        return;
+                    })
+                    .then((url) => {
+                        newData = {
+                            ...newData,
+                            avatar: url
+                        }
+                    })
+                )
             });
         }
 
-        return submitActions(newData);
+        if (banner) {
+            bannerPromise = new Promise((resolve, reject) => {
+                resolve(
+                    fileUpload(banner).then(snapshot => snapshot.ref.getDownloadURL()).catch((err) => {
+                        console.warn('There was an error uploading the image', err);
+                        submitActions(newData);
+                        return;
+                    })
+                    .then((url) => {
+                        newData = {
+                            ...newData,
+                            banner: url
+                        }
+                    })
+                )
+            });
+        }
+
+        const promises = Promise.all([avatarPromise, bannerPromise]);
+
+        promises.then(() => {
+            return submitActions(newData);
+        }).catch((err) => {
+            console.warn('There was an error'. err);
+        });
     }
 
     return (
@@ -101,7 +125,6 @@ export default function Profile() {
             <h1>My Profile</h1>
             <EditProfileForm
                 onFormSubmit={handleFormSubmit}
-                onRemoveLinkClick={handleRemoveLinkClick}
             />
         </Fragment>
     );

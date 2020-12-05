@@ -2,34 +2,26 @@ import PropTypes from 'prop-types';
 
 import { useStateValue } from '../../state';
 
-export default function EditProfileForm({ onFormSubmit, onRemoveLinkClick }) {
+export default function EditProfileForm({ onFormSubmit }) {
     const [{ profile }] = useStateValue();
-
-    let profileLinks
-    if (profile.links.length) {
-        profileLinks = profile.links.map((link, i) => {
-            return (
-                <li key={`link-${i}`}>
-                    <button onClick={onRemoveLinkClick}>{link}</button>
-                </li>
-            );
-        });
-    }
 
     return (
         <form
             onSubmit={onFormSubmit}
         >
             <div>
-                {profile.avatar &&
-                    <div>
-                        <img src={profile.avatar} alt="" />
-                    </div>
-                }
                 <label htmlFor="avatar">Profile Picture</label>
                 <input
                     type="file"
                     name="avatar"
+                    accept="image/*"
+                />
+            </div>
+            <div>
+                <label htmlFor="banner">Banner</label>
+                <input
+                    type="file"
+                    name="banner"
                     accept="image/*"
                 />
             </div>
@@ -46,15 +38,6 @@ export default function EditProfileForm({ onFormSubmit, onRemoveLinkClick }) {
                 <textarea name="bio" defaultValue={profile.bio} />
             </div>
             <div>
-                <label>Links</label>
-                {profileLinks &&
-                    <ul>
-                        {profileLinks}
-                    </ul>
-                }
-                <input type="url" name="link" />
-            </div>
-            <div>
                 <button type="submit">Save</button>
             </div>
         </form>
@@ -62,6 +45,5 @@ export default function EditProfileForm({ onFormSubmit, onRemoveLinkClick }) {
 }
 
 EditProfileForm.propTypes = {
-    onFormSubmit: PropTypes.func,
-    onRemoveLinkClick: PropTypes.func
+    onFormSubmit: PropTypes.func
 };
