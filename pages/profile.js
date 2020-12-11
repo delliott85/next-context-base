@@ -3,7 +3,10 @@ import firebase, { updateFirestore } from '../api';
 import { useRouter } from 'next/router';
 
 import { useStateValue } from '../state';
+import { userLogin } from '../reducer/currentUser';
 import { updateProfile } from '../reducer/profile';
+
+import { setLocalStorage } from '../utils';
 
 import EditProfileForm from '../components/profile/EditProfileForm';
 
@@ -87,6 +90,20 @@ export default function Profile() {
                             ...newData,
                             avatar: url
                         }
+
+                        const updateUser = new Promise((resolve) => {
+                            resolve(updateFirestore('users', currentUser.id, { avatar: url }));
+                        });
+
+                        updateUser.then(() => {
+                            dispatch(userLogin({ avatar: url }));
+                            setLocalStorage('currentUser', { 
+                                ...currentUser,
+                                avatar: url
+                            });
+                        }).catch((err) => {
+                            console.warn('There was an error updating the user', err);
+                        })
                     })
                 )
             });
