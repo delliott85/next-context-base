@@ -1,11 +1,9 @@
-import userReducer from './currentUser';
-import modalReducer from './modal';
+import { defaultState as userState, userReducer } from './currentUser';
+import { defaultState as modalState, modalReducer } from './modal';
 
 export const initialState = {
-    currentUser: {
-        isLoggedIn: false
-    },
-    modal: {}
+    ...userState,
+    ...modalState
 }
 
 export const reducer = ({ currentUser, modal }, action) => ({

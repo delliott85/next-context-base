@@ -1,7 +1,13 @@
 const USER_LOGIN = 'userLogin';
 const USER_LOGOUT = 'userLogout';
 
-export default function userReducer(state, action) {
+export const defaultState = {
+    currentUser: {
+        isLoggedIn: false
+    }
+}
+
+export function userReducer(state, action) {
     switch (action.type) {
         case USER_LOGIN:
         return {

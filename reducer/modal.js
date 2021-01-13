@@ -1,7 +1,11 @@
 const SHOW_MODAL = 'showModal';
 const HIDE_MODAL = 'hideModal';
 
-export default function modalReducer(state, action) {
+export const defaultState = {
+    modal: {}
+}
+
+export function modalReducer(state, action) {
     switch (action.type) {
         case SHOW_MODAL:
             return {
