@@ -1,16 +1,15 @@
-import userReducer from './currentUser';
-import modalReducer from './modal';
-import profileReducer from './profile';
+import { defaultState as globalState, globalReducer } from './global';
+import { defaultState as userState, userReducer } from './currentUser';
+import { defaultState as modalState, modalReducer } from './modal';
 
 export const initialState = {
-    currentUser: {
-        isLoggedIn: false
-    },
-    modal: {},
-    profile: {}
+    ...globalState,
+    ...userState,
+    ...modalState
 }
 
-export const reducer = ({ currentUser, modal, profile }, action) => ({
+export const reducer = ({ global, currentUser, modal }, action) => ({
+    global: globalReducer(global, action),
     currentUser: userReducer(currentUser, action),
     modal: modalReducer(modal, action),
     profile: profileReducer(profile, action)
