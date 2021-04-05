@@ -7,12 +7,14 @@ export const defaultState = {
     }
 }
 
-export function userReducer(state, action) {
+export function currentUserReducer(state, action) {
     switch (action.type) {
         case USER_LOGIN:
-        return {
-            ...action.user
-        }
+            return {
+                ...action.user,
+                isLoggedIn: true
+            }
+
         case USER_LOGOUT:
             return {
                 isLoggedIn: false
