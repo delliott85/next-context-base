@@ -11,6 +11,5 @@ export const initialState = {
 export const reducer = ({ global, currentUser, modal }, action) => ({
     global: globalReducer(global, action),
     currentUser: userReducer(currentUser, action),
-    modal: modalReducer(modal, action),
-    profile: profileReducer(profile, action)
+    modal: modalReducer(modal, action)
 });
